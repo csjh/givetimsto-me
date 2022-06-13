@@ -29,6 +29,8 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@sveltejs/adapter-node": "^1.0.0-next.78"
+		"@sveltejs/adapter-node": "^1.0.0-next.78",
+		"dotenv": "^16.0.1",
+		"postgres": "^3.2.4"
 	}
 }
