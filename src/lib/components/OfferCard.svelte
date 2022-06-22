@@ -1,21 +1,21 @@
 <script lang="ts">
 	export let image: string;
-    export let price: string;
-    export let product: string;
-	let activated = false;
+	export let price: string;
+	export let product: string;
+    const fluff = '{fluff}';
 </script>
 
-<span class="jMSpaO">
-	<button class="fhqYkB">
-		<div class="eHxNWP fMSgiQ">
+<span class="offerCardParent">
+	<button class="reactiveButton">
+		<div class="fillParent softenEdges">
 			<picture>
 				<source
 					sizes="18.02469135802469vw"
-					srcset="{image}?w=320&amp;q=40&amp;fit=max&amp;auto=format 320w, {image}?w=750&amp;q=40&amp;fit=max&amp;auto=format 750w, {image}?w=1077&amp;q=40&amp;fit=max&amp;auto=format 1076w, {image}?w=1125&amp;q=40&amp;fit=max&amp;auto=format 1125w, {image}?w=3840&amp;q=40&amp;fit=max&amp;auto=format 3840w, {image}?w=1280&amp;q=40&amp;fit=max&amp;auto=format 1280w, {image}?w=1440&amp;q=40&amp;fit=max&amp;auto=format 1440w, {image}?w=2880&amp;q=40&amp;fit=max&amp;auto=format 2880w, {image}?w=4320&amp;q=40&amp;fit=max&amp;auto=format 4320w, {image}?w=1600&amp;q=40&amp;fit=max&amp;auto=format 1600w, {image}?w=3200&amp;q=40&amp;fit=max&amp;auto=format 3200w, {image}?w=6400&amp;q=40&amp;fit=max&amp;auto=format 6400w, {image}?w=4840&amp;q=40&amp;fit=max&amp;auto=format 4840w, {image}?w=5288&amp;q=40&amp;fit=max&amp;auto=format 5288w"
+					srcset="{image}?w=320{fluff} 320w, {image}?w=750{fluff} 750w, {image}?w=1077{fluff} 1076w, {image}?w=1125{fluff} 1125w, {image}?w=3840{fluff} 3840w, {image}?w=1280{fluff} 1280w, {image}?w=1440{fluff} 1440w, {image}?w=2880{fluff} 2880w, {image}?w=4320{fluff} 4320w, {image}?w=1600{fluff} 1600w, {image}?w=3200{fluff} 3200w, {image}?w=6400{fluff} 6400w, {image}?w=4840{fluff} 4840w, {image}?w=5288{fluff} 5288w"
 				/>
 				<img alt="" src="" draggable="true" class="emmwLI" />
 			</picture>
-			<div class="iTjIKt" />
+			<div class="bottomPadding" />
 		</div>
 		<div class="erOdFI">
 			<div class="eICuOY">
@@ -26,20 +26,7 @@
 				<p class="dbdHIx">1 days left</p>
 			</div>
 			<div width="100%" height="auto" class="dqSplr">
-				{#if activated}
-					<button aria-disabled="true" class="dfLoCE" disabled tabindex="-1">
-						<div color="white" aria-hidden="true" class="kwalJA">
-							<svg viewBox="0 0 24 24" focusable="false">
-								<title /><path
-									d="m9.0002 16.17-4.17-4.17-1.42 1.41 5.59 5.59 12-12-1.41-1.41-10.59 10.58z"
-								/>
-							</svg>
-						</div>
-						<span> Activated </span>
-					</button>
-				{:else}
-					<button aria-disabled="false" class="gAXORD" tabindex="0"> Activate </button>
-				{/if}
+				<button aria-disabled="false" class="gAXORD" tabindex="0"> Activate </button>
 			</div>
 		</div>
 	</button>
@@ -48,10 +35,6 @@
 <style>
 	/*! CSS Used from: Embedded ; media=screen */
 	@media screen {
-		.kwalJA svg {
-			fill: rgb(232, 230, 227);
-			stroke: rgb(232, 230, 227);
-		}
 		button {
 			background-color: #181a1b;
 		}
@@ -126,76 +109,6 @@
 		}
 	}
 	/*! CSS Used from: Embedded */
-	.dfLoCE {
-		font-family: sofia_pro_bold, Helvetica, Arial, sans-serif;
-		font-weight: normal;
-		font-size: 0.875rem;
-		text-align: center;
-		text-transform: none;
-		letter-spacing: normal;
-		max-width: 100%;
-		white-space: nowrap;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		color: rgb(110, 110, 110);
-		background-color: rgb(236, 236, 236);
-		outline: 0px;
-		border: 0px;
-		border-radius: 9999rem;
-		width: 100%;
-		cursor: not-allowed;
-		margin: 0px;
-		padding: 0.375rem 1.5rem;
-		transition: all 0.125s ease 0s;
-		display: flex;
-		flex-shrink: 0;
-		-webkit-box-pack: justify;
-		justify-content: space-between;
-		-webkit-box-align: center;
-		align-items: center;
-	}
-	.dfLoCE div > svg {
-		fill: rgb(110, 110, 110);
-		stroke: rgb(110, 110, 110);
-	}
-	.dfLoCE div > svg {
-		-webkit-box-align: center;
-		align-items: center;
-		height: 16px;
-		width: 16px;
-	}
-	.dfLoCE > span {
-		margin-left: 0.5rem;
-		margin-right: 0px;
-	}
-	.dfLoCE:hover {
-		background-color: rgb(236, 236, 236);
-	}
-	.dfLoCE:active {
-		outline: 0px;
-		transform: none;
-		background-color: rgb(236, 236, 236);
-	}
-	.dfLoCE:focus {
-		outline: 0px;
-		box-shadow: rgb(235, 169, 180) 0px 0px 0px 0.25rem;
-	}
-	.kwalJA {
-		display: flex;
-		-webkit-box-align: center;
-		align-items: center;
-		-webkit-box-pack: center;
-		justify-content: center;
-		width: auto;
-		height: auto;
-	}
-	.kwalJA svg {
-		fill: rgb(255, 255, 255);
-		stroke: rgb(255, 255, 255);
-		stroke-width: 0;
-		width: 100%;
-		height: 100%;
-	}
 	.gAXORD {
 		font-family: sofia_pro_bold, Helvetica, Arial, sans-serif;
 		font-weight: normal;
@@ -266,7 +179,7 @@
 	.jnsShj > p {
 		margin: 0px;
 	}
-	.eHxNWP {
+	.fillParent {
 		border-radius: inherit;
 		position: relative;
 		overflow: hidden;
@@ -284,7 +197,7 @@
 		opacity: 1;
 		transition: opacity 200ms ease-out 0s;
 	}
-	.iTjIKt {
+	.bottomPadding {
 		padding-bottom: 66.6667%;
 	}
 	/* body.disable-focus-styles :focus {
@@ -307,13 +220,13 @@
 	button {
 		color: inherit;
 	}
-	.jMSpaO {
+	.offerCardParent {
 		display: flex;
 		-webkit-box-pack: center;
 		justify-content: center;
 		margin: 0px 16px 0px 0px;
 	}
-	.fhqYkB {
+	.reactiveButton {
 		height: 100%;
 		border-radius: 4px;
 		box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 6px 0px;
@@ -335,11 +248,11 @@
 		transition: box-shadow 0.3s ease 0s;
 		min-width: 146px;
 	}
-	.fhqYkB:hover {
+	.reactiveButton:hover {
 		box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 0px 3px;
 	}
 	@media screen and (min-width: 813px) {
-		.fhqYkB {
+		.reactiveButton {
 			width: 250px;
 		}
 	}
@@ -398,7 +311,7 @@
 		-webkit-box-orient: vertical;
 		overflow: hidden;
 	}
-	.fMSgiQ {
+	.softenEdges {
 		border-radius: 4px 4px 0px 0px;
 		height: calc(97.3333px);
 		position: relative;
@@ -441,13 +354,13 @@
 		button {
 			color: inherit;
 		}
-		.fhqYkB {
+		.reactiveButton {
 			box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 6px 0px;
 			border-color: initial;
 			background-image: initial;
 			background-color: rgb(24, 26, 27);
 		}
-		.fhqYkB:hover {
+		.reactiveButton:hover {
 			box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 0px 3px;
 		}
 		.jfipoE {

@@ -1,6 +1,11 @@
 {
-	"useTabs": true,
-	"singleQuote": true,
-	"trailingComma": "none",
-	"printWidth": 100
+    "trailingComma": "none",
+    "tabWidth": 4,
+    "semi": true,
+    "singleQuote": false,
+    "plugins": ["prettier-plugin-svelte"],
+    "svelteSortOrder": "options-scripts-markup-styles",
+    "svelteStrictMode": false,
+    "svelteBracketNewLine": true,
+    "svelteIndentScriptAndStyle": true
 }

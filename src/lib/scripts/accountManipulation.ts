@@ -1,40 +1,6 @@
-const sleep = (ms: number) => new Promise((res) => setTimeout(res, ms));
-const emailNumber = () => Math.floor(Math.random() * 1e10);
 
 // const TIMBITS_COUPON_ID = '56b8ccb7-7521-43fb-bf56-bbf98831735f';
-
-export async function makeAccountAndReturnDetails() {
-	const email = `teenagecatyt2+${emailNumber()}@gmail.com`;
-	const birthdayIn7Days = new Date(Date.now() + 1000 * 60 * 60 * 24 * 8)
-		.toISOString()
-		.split('T')[0];
-	const signUpConfirmationJWT = await createAccount('Jimmy', email, birthdayIn7Days);
-	console.log(signUpConfirmationJWT);
-	sleep(1);
-
-	while (!(await completeSignUp(signUpConfirmationJWT))) sleep(1);
-
-	await getSignInJWT(email);
-	console.log('Confirmed signin\n\n\n');
-	sleep(1);
-
-	const { sessionId, challengeCode } = await validateAuthJWT(signUpConfirmationJWT);
-	console.log(sessionId, challengeCode + '\n\n\n');
-	sleep(1);
-
-	const { IdToken: bearerToken, RefreshToken: refreshToken } = await getAmazonJwt(challengeCode, email, sessionId);
-	console.log(bearerToken + '\n\n\n');
-	sleep(1);
-
-    const barcode = await getBarcode(bearerToken);
-
-	return {
-        bearerToken,
-        barcode,
-        email,
-        refreshToken
-    }
-}
+const TIM_HORTONS_COGNITO_ID = '3fmtnokmptq4l3q7pfham4o2fn';
 
 async function getTimsGraphQL(data: object, headers?: object) {
 	const response = await fetch('https://use1-prod-th.rbictg.com/graphql', {
@@ -51,8 +17,8 @@ async function createAccount(name: string, email: string, dob: string): Promise<
 		variables: {
 			input: {
 				country: 'CAN',
-				dob: dob,
-				name: name,
+				dob,
+				name,
 				phoneNumber: '',
 				platform: 'web',
 				stage: 'prod',
@@ -71,9 +37,7 @@ async function createAccount(name: string, email: string, dob: string): Promise<
 async function completeSignUp(jwt: string): Promise<boolean> {
 	const json_data = {
 		operationName: 'SignUpComplete',
-		variables: {
-			jwt: jwt
-		},
+		variables: { jwt },
 		query: 'query SignUpComplete($jwt: String!) {\n  signUpComplete(jwt: $jwt)\n}\n'
 	};
 
@@ -86,7 +50,7 @@ async function getSignInJWT(email: string): Promise<string> {
 		operationName: 'SignInJWT',
 		variables: {
 			input: {
-				email: email,
+				email,
 				stage: 'prod',
 				platform: 'web'
 			}
@@ -102,9 +66,7 @@ async function validateAuthJWT(jwt: string): Promise<{ sessionId: string; challe
 	const json_data = {
 		operationName: 'ValidateAuthJwt',
 		variables: {
-			input: {
-				jwt: jwt
-			}
+			input: { jwt }
 		},
 		query:
 			'mutation ValidateAuthJwt($input: validateAuthJwtInput!) {\n  validateAuthJwt(authInput: $input) {\n    challengeCode\n    sessionId\n    __typename\n  }\n}\n'
@@ -114,7 +76,11 @@ async function validateAuthJWT(jwt: string): Promise<{ sessionId: string; challe
 	return response['data']['validateAuthJwt'];
 }
 
-async function getAmazonJwt(challenge: string, email: string, session: string): Promise<{ IdToken: string; RefreshToken: string }> {
+async function getAmazonJwt(
+	challenge: string,
+	email: string,
+	session: string
+): Promise<{ IdToken: string; RefreshToken: string }> {
 	const headers = {
 		'Content-Type': 'application/x-amz-json-1.1',
 		'X-Amz-Target': 'AWSCognitoIdentityProviderService.RespondToAuthChallenge'
@@ -126,7 +92,7 @@ async function getAmazonJwt(challenge: string, email: string, session: string): 
 			USERNAME: email,
 			ANSWER: challenge
 		},
-		ClientId: '3fmtnokmptq4l3q7pfham4o2fn',
+		ClientId: TIM_HORTONS_COGNITO_ID,
 		Session: session
 	};
 
@@ -148,14 +114,16 @@ async function getBarcode(amazonJwt: string): Promise<string> {
 		operationName: 'GetLoyaltyCards',
 		variables: {},
 		query:
-			'query GetLoyaltyCards {\n  getLoyaltyCards {\n    count\n    cards {\n      barcode\n      cardFormat\n      cardId\n      cardType\n      name\n      __typename\n    }\n    __typename\n  }\n}\n'
+			'query GetLoyaltyCards {  getLoyaltyCards {\n    count\n    cards {\n      barcode\n      cardFormat\n      cardId\n      cardType\n      name\n      __typename\n    }\n    __typename\n  }\n}\n'
 	};
 
 	const response = await getTimsGraphQL(json_data, headers);
 	return `${response['data']['getLoyaltyCards']['cards'][0]['barcode']}|SR|`;
 }
 
-export async function getOffers(amazonJwt: string): Promise<{ couponId: string; tokenId: string }[]> {
+export async function getOffers(
+	amazonJwt: string
+): Promise<{ couponId: string; tokenId: string }[]> {
 	const headers = {
 		authorization: `Bearer ${amazonJwt}`
 	};
@@ -177,49 +145,52 @@ export async function getOffers(amazonJwt: string): Promise<{ couponId: string; 
 	return response['data']['evaluateAllUserOffers']['offersFeedback'];
 }
 
-export async function findAndActivateOffer(offers: { couponId: string; tokenId: string }[], desiredCoupon: string, bearerToken: string) {
-    let tokenId = '';
-    for (const offer of offers) {
-    	if (offer.couponId == desiredCoupon) {
-    		tokenId = offer.tokenId;
-            break;
-    	}
-    }
+export async function findAndActivateOffer(
+	offers: { couponId: string; tokenId: string }[],
+	desiredCoupon: string,
+	bearerToken: string
+) {
+	let tokenId = '';
+	for (const offer of offers) {
+		if (offer.couponId == desiredCoupon) {
+			tokenId = offer.tokenId;
+			break;
+		}
+	}
 
-    const headers = {
-        authorization: `Bearer ${bearerToken}`
-    };
-    const json_data = {
-        operationName: 'activateLoyaltyOffer',
-        variables: {
-            tokenId: tokenId
-        },
-        query:
-            'mutation activateLoyaltyOffer($tokenId: String!) {\n  activateLoyaltyOffer(tokenId: $tokenId)\n}\n'
-    };
-    return await getTimsGraphQL(json_data, headers);
+	const headers = {
+		authorization: `Bearer ${bearerToken}`
+	};
+	const json_data = {
+		operationName: 'activateLoyaltyOffer',
+		variables: {
+			tokenId: tokenId
+		},
+		query: 'mutation activateLoyaltyOffer($tokenId: String!) {\n  activateLoyaltyOffer(tokenId: $tokenId)\n}\n'
+	};
+	return await getTimsGraphQL(json_data, headers);
 }
 
-export async function refreshBearerToken(refreshToken: string) {
-    const headers = {
-        'content-type': 'application/x-amz-json-1.1',
-        'x-amz-target': 'AWSCognitoIdentityProviderService.InitiateAuth'
-    }
+export async function refreshBearerToken(refreshToken: string): Promise<string> {
+	const headers = {
+		'content-type': 'application/x-amz-json-1.1',
+		'x-amz-target': 'AWSCognitoIdentityProviderService.InitiateAuth'
+	};
 
-    const json_data = {
-        "ClientId": "3fmtnokmptq4l3q7pfham4o2fn",
-        "AuthFlow": "REFRESH_TOKEN_AUTH",
-        "AuthParameters": {
-            "REFRESH_TOKEN": refreshToken,
-            "DEVICE_KEY": undefined
-        }
-    }
+	const json_data = {
+		ClientId: TIM_HORTONS_COGNITO_ID,
+		AuthFlow: 'REFRESH_TOKEN_AUTH',
+		AuthParameters: {
+			REFRESH_TOKEN: refreshToken,
+			DEVICE_KEY: undefined
+		}
+	};
 
-    const response = await fetch('https://cognito-idp.us-east-1.amazonaws.com/', {
-    	method: 'POST',
-    	headers,
-    	body: JSON.stringify(json_data)
-    }).then((response) => response.json());
+	const response = await fetch('https://cognito-idp.us-east-1.amazonaws.com/', {
+		method: 'POST',
+		headers,
+		body: JSON.stringify(json_data)
+	}).then((response) => response.json());
 
-    return response['AuthenticationResult']["IdToken"];
+	return response['AuthenticationResult']['IdToken'];
 }
