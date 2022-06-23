@@ -1,13 +1,13 @@
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
 dotenv.config();
 
-import postgres from 'postgres';
+import postgres from "postgres";
 
 const uri = process.env.POSTGRES_URI;
 const options = {};
 
 if (!uri) {
-	throw new Error('Please add your Postgres URI to .env');
+    throw new Error("Please add your Postgres URI to .env");
 }
 
 const sql = postgres(uri, options);
