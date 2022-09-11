@@ -3,7 +3,7 @@ dotenv.config();
 
 import postgres from "postgres";
 
-const uri = process.env.POSTGRES_URI;
+const uri = process.env.DATABASE_URL;
 const options = {};
 
 if (!uri) {
