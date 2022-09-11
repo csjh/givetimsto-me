@@ -1,34 +1,44 @@
+import * as Tims from "$lib/types/graphql";
+import type { Amazon } from "$lib/types/amazon";
+
 const sleep = (ms: number) => new Promise((res) => setTimeout(res, ms));
 const print = (...text: unknown[]) => console.log(`${text.join(" ")}\n\n\n`);
 
-// const TIMBITS_COUPON_ID = '56b8ccb7-7521-43fb-bf56-bbf98831735f';
 const TIM_HORTONS_COGNITO_ID = "3fmtnokmptq4l3q7pfham4o2fn";
 
 export async function makeNAccountsAndReturnDetails(numberOfAccounts: number) {
     const userDetails = [];
-    const birthdayIn7Days = new Date(Date.now() + 1000 * 60 * 60 * 24 * 8)
-        .toISOString()
-        .split("T")[0];
+    const birthday = new Date(Date.now() + 1000 * 60 * 60 * 24 * 8); // date in 8 days
+    birthday.setFullYear(
+        birthday.getFullYear() - 18 - Math.floor(Math.random() * 50)
+    );
+
     for (let i = 0; i < numberOfAccounts; i++) {
         userDetails.push({
             name: "Johnny",
-            email: `${Math.floor(Math.random() * 1e10)}@givetimsto.me`,
-            dob: birthdayIn7Days
+            email: `alex+${Math.floor(Math.random() * 1e10)}@gmail.com`,
+            dob: birthday.toISOString().split("T")[0]
         });
     }
     const signUpConfirmationJWTsWithEmails = await createAccounts(userDetails);
     print(signUpConfirmationJWTsWithEmails);
+    for (const jwt of signUpConfirmationJWTsWithEmails) {
+        if (jwt == null) {
+            throw new Error("jwt is null");
+        }
+    }
     await sleep(1);
 
     while (
         !(await completeSignUp(
-            signUpConfirmationJWTsWithEmails.map((obj) => obj.jwt)
+            signUpConfirmationJWTsWithEmails.map(({ jwt }) => jwt)
         ))
     )
-        await sleep(1);
+        await sleep(1); // wait for confirmation to complete
 
+    // possibly useless request but make it nonetheless to preserve normalcy
     await getSignInJWTs(
-        signUpConfirmationJWTsWithEmails.map((obj) => obj.email)
+        signUpConfirmationJWTsWithEmails.map(({ email }) => email)
     );
     print("Confirmed signin");
     await sleep(1);
@@ -44,30 +54,49 @@ export async function makeNAccountsAndReturnDetails(numberOfAccounts: number) {
     await sleep(1);
 
     return await Promise.all(
-        users.map(
-            async ({
-                IdToken: bearer_token,
-                RefreshToken: refresh_token,
-                email
-            }) => ({
-                bearer_token,
-                barcode: await getBarcode(bearer_token),
-                email,
-                refresh_token
-            })
-        )
+        users.map(async ({ IdToken, RefreshToken, email }) => ({
+            barcode: await getBarcode(IdToken),
+            email,
+            refresh_token: RefreshToken
+        }))
     );
 }
 
-async function getTimsGraphQL(data: object, headers?: object) {
+/**
+ * Helper function to make requests to Tim Horton's GraphQL endpoint
+ */
+async function getTimsGraphQL<Input, Output>(
+    data: { operationName: string; variables: Input; query: string }[],
+    headers?: object
+) {
     const response = await fetch("https://use1-prod-th.rbictg.com/graphql", {
         method: "POST",
         headers: { "Content-Type": "application/json", ...headers },
         body: JSON.stringify(data)
     });
-    return await response.json();
+    return (await response.json()) as { data: Output }[];
+}
+async function getAmazonGraphQL<T>(action: string, data: object) {
+    const headers = {
+        "Content-Type": "application/x-amz-json-1.1",
+        "X-Amz-Target": `AWSCognitoIdentityProviderService.${action}`
+    };
+
+    const response = await fetch(
+        "https://cognito-idp.us-east-1.amazonaws.com/",
+        {
+            method: "POST",
+            headers,
+            body: JSON.stringify(data)
+        }
+    );
+
+    return (await response.json()) as T;
 }
 
+/**
+ * Creates account with the given details and returns the jwt for confirmation
+ */
 async function createAccounts(
     userOrUsers: { name: string; email: string; dob: string }[]
 ) {
@@ -75,12 +104,12 @@ async function createAccounts(
         operationName: "SignUp",
         variables: {
             input: {
-                country: "CAN",
+                country: Tims.IsoCountryCode.CA,
                 dob: user.dob,
                 name: user.name,
                 phoneNumber: "",
-                platform: "web",
-                stage: "prod",
+                platform: Tims.Platform.WEB,
+                stage: Tims.Stage.PROD,
                 userName: user.email,
                 wantsPromotionalEmails: true,
                 zipcode: ""
@@ -89,60 +118,54 @@ async function createAccounts(
         query: "mutation SignUp($input: SignUpUserInput!) {\n  signUp(userInfo: $input)\n}\n"
     }));
 
-    const response: { data: { signUp: string } }[] = await getTimsGraphQL(
-        json_data
-    );
+    const response = await getTimsGraphQL<
+        Tims.ISignUpMutationVariables,
+        Tims.ISignUpMutation
+    >(json_data);
     return response.map((res, index) => ({
         email: userOrUsers[index].email,
         jwt: res.data.signUp
     }));
 }
 
-async function completeSignUp(jwts: string[]): Promise<boolean> {
+async function completeSignUp(jwts: string[]) {
     const json_data = jwts.map((jwt) => ({
         operationName: "SignUpComplete",
         variables: { jwt },
         query: "query SignUpComplete($jwt: String!) {\n  signUpComplete(jwt: $jwt)\n}\n"
     }));
 
-    const response: { data: { signUpComplete: boolean } }[] =
-        await getTimsGraphQL(json_data);
-    return response.every((response) => response["data"]["signUpComplete"]);
+    const response = await getTimsGraphQL<
+        Tims.ISignUpCompleteQueryVariables,
+        Tims.ISignUpCompleteQuery
+    >(json_data);
+    return response.every((response) => response.data.signUpComplete);
 }
 
-async function getSignInJWTs(
-    emails: string[]
-): Promise<{ email: string; jwt: string }[]> {
+async function getSignInJWTs(emails: string[]) {
     const json_data = emails.map((email) => ({
         operationName: "SignInJWT",
         variables: {
             input: {
                 email,
-                stage: "prod",
-                platform: "web"
+                stage: Tims.Stage.PROD,
+                platform: Tims.Platform.WEB
             }
         },
         query: "mutation SignInJWT($input: SignInUserInput!) {\n  signInJWT(userInfo: $input)\n}\n"
     }));
 
-    const response: { data: { signInJWT: string } }[] = await getTimsGraphQL(
-        json_data
-    );
+    const response = await getTimsGraphQL<
+        Tims.ISignInJwtMutationVariables,
+        Tims.ISignInJwtMutation
+    >(json_data);
     return response.map((res, index) => ({
         email: emails[index],
         jwt: res.data.signInJWT
     }));
 }
 
-async function validateAuthJWTs(
-    users: { jwt: string; email: string }[]
-): Promise<
-    {
-        email: string;
-        jwt: string;
-        sessionAndChallenge: { sessionId: string; challengeCode: string };
-    }[]
-> {
+async function validateAuthJWTs(users: { jwt: string; email: string }[]) {
     const json_data = users.map((user) => ({
         operationName: "ValidateAuthJwt",
         variables: {
@@ -151,26 +174,21 @@ async function validateAuthJWTs(
         query: "mutation ValidateAuthJwt($input: validateAuthJwtInput!) {\n  validateAuthJwt(authInput: $input) {\n    challengeCode\n    sessionId\n    __typename\n  }\n}\n"
     }));
 
-    const response: {
-        data: { validateAuthJwt: { sessionId: string; challengeCode: string } };
-    }[] = await getTimsGraphQL(json_data);
-    return response.map((res, index) => ({
+    const response = await getTimsGraphQL<
+        Tims.IValidateAuthJwtMutationVariables,
+        Tims.IValidateAuthJwtMutation
+    >(json_data);
+    return response.map(({ data }, index) => ({
         jwt: users[index].jwt,
         email: users[index].email,
-        sessionAndChallenge: res.data.validateAuthJwt
+        sessionAndChallenge: data.validateAuthJwt
     }));
 }
 
 async function getAmazonJwt(user: {
     email: string;
     sessionAndChallenge: { sessionId: string; challengeCode: string };
-}): Promise<{ email: string; IdToken: string; RefreshToken: string }> {
-    const headers = {
-        "Content-Type": "application/x-amz-json-1.1",
-        "X-Amz-Target":
-            "AWSCognitoIdentityProviderService.RespondToAuthChallenge"
-    };
-
+}) {
     const json_data = {
         ChallengeName: "CUSTOM_CHALLENGE",
         ChallengeResponses: {
@@ -181,90 +199,82 @@ async function getAmazonJwt(user: {
         Session: user.sessionAndChallenge.sessionId
     };
 
-    const response = await fetch(
-        "https://cognito-idp.us-east-1.amazonaws.com/",
+    const response = await getAmazonGraphQL<Amazon>(
+        "RespondToAuthChallenge",
+        json_data
+    );
+
+    return { email: user.email, ...response.AuthenticationResult };
+}
+
+async function getBarcode(amazonJwt: string) {
+    const headers = {
+        authorization: `Bearer ${amazonJwt}`
+    };
+
+    const json_data = [
         {
-            method: "POST",
-            headers,
-            body: JSON.stringify(json_data)
+            operationName: "GetLoyaltyCards",
+            variables: {},
+            query: "query GetLoyaltyCards {  getLoyaltyCards {\n    count\n    cards {\n      barcode\n      cardFormat\n      cardId\n      cardType\n      name\n      __typename\n    }\n    __typename\n  }\n}\n"
         }
-    ).then((response) => response.json());
+    ];
 
-    return { email: user.email, ...response["AuthenticationResult"] };
+    const response = await getTimsGraphQL<unknown, Tims.IGetLoyaltyCardsQuery>(
+        json_data,
+        headers
+    );
+    const barcode = response[0].data.getLoyaltyCards?.cards[0]?.barcode;
+    return `${barcode}|SR|`;
 }
 
-async function getBarcode(amazonJwt: string): Promise<string> {
+export async function getOffers(amazonJwt: string) {
     const headers = {
         authorization: `Bearer ${amazonJwt}`
     };
 
-    const json_data = {
-        operationName: "GetLoyaltyCards",
-        variables: {},
-        query: "query GetLoyaltyCards {  getLoyaltyCards {\n    count\n    cards {\n      barcode\n      cardFormat\n      cardId\n      cardType\n      name\n      __typename\n    }\n    __typename\n  }\n}\n"
-    };
+    const json_data = [
+        {
+            operationName: "evaluateAllUserOffers",
+            variables: {
+                locale: Tims.Locale.EN,
+                platform: Tims.Platform.WEB,
+                serviceMode: undefined,
+                redeemedOn: new Date().toISOString().replace("Z", "-04:00"),
+                storeId: undefined
+            },
+            query: "query evaluateAllUserOffers($locale: Locale, $platform: Platform, $redeemedOn: String!, $serviceMode: ServiceMode, $storeId: String) {\n  evaluateAllUserOffers(locale: $locale, platform: $platform, redeemedOn: $redeemedOn, serviceMode: $serviceMode, storeId: $storeId) {\n    offersFeedback {\n      ...OfferFeedbackEntryFragment\n      __typename\n    }\n    __typename\n  }\n}\n\nfragment OfferFeedbackEntryFragment on CouponUserOffersFeedbackEntry {\n  cartEntry {\n    cartId: lineId\n    __typename\n  }\n  _id: couponId\n  tokenId\n  couponId\n  offerDetails\n  offerState\n  offerVariables {\n    key\n    type\n    value\n    __typename\n  }\n  rank\n  redemptionEligibility {\n    isRedeemable\n    isValid\n    evaluationFeedback {\n      code\n      condition\n      message\n      redeemableForSeconds\n      redeemableInSeconds\n      ruleSetType\n      sanityId\n      __typename\n    }\n    validationErrors {\n      code\n      message\n      ruleSetType\n      __typename\n    }\n    __typename\n  }\n  __typename\n}\n"
+        }
+    ];
 
-    const response = await getTimsGraphQL(json_data, headers);
-    return `${response["data"]["getLoyaltyCards"]["cards"][0]["barcode"]}|SR|`;
+    const response = await getTimsGraphQL<
+        Tims.IEvaluateAllUserOffersQueryVariables,
+        Tims.IEvaluateAllUserOffersQuery
+    >(json_data, headers);
+    return response[0].data.evaluateAllUserOffers.offersFeedback;
 }
 
-export async function getOffers(
-    amazonJwt: string
-): Promise<{ couponId: string; tokenId: string }[]> {
-    const headers = {
-        authorization: `Bearer ${amazonJwt}`
-    };
-
-    const json_data = {
-        operationName: "evaluateAllUserOffers",
-        variables: {
-            locale: "en",
-            platform: "web",
-            serviceMode: undefined,
-            redeemedOn: new Date().toISOString().replace("Z", "-04:00"),
-            storeId: undefined
-        },
-        query: "query evaluateAllUserOffers($locale: Locale, $platform: Platform, $redeemedOn: String!, $serviceMode: ServiceMode, $storeId: String) {\n  evaluateAllUserOffers(locale: $locale, platform: $platform, redeemedOn: $redeemedOn, serviceMode: $serviceMode, storeId: $storeId) {\n    offersFeedback {\n      ...OfferFeedbackEntryFragment\n      __typename\n    }\n    __typename\n  }\n}\n\nfragment OfferFeedbackEntryFragment on CouponUserOffersFeedbackEntry {\n  cartEntry {\n    cartId: lineId\n    __typename\n  }\n  _id: couponId\n  tokenId\n  couponId\n  offerDetails\n  offerState\n  offerVariables {\n    key\n    type\n    value\n    __typename\n  }\n  rank\n  redemptionEligibility {\n    isRedeemable\n    isValid\n    evaluationFeedback {\n      code\n      condition\n      message\n      redeemableForSeconds\n      redeemableInSeconds\n      ruleSetType\n      sanityId\n      __typename\n    }\n    validationErrors {\n      code\n      message\n      ruleSetType\n      __typename\n    }\n    __typename\n  }\n  __typename\n}\n"
-    };
-
-    const response = await getTimsGraphQL(json_data, headers);
-    return response["data"]["evaluateAllUserOffers"]["offersFeedback"];
-}
-
-export async function findAndActivateOffer(
-    offers: { couponId: string; tokenId: string }[],
-    desiredCoupon: string,
+export async function activateAllOffers(
+    tokenId: string[],
     bearerToken: string
 ) {
-    let tokenId = "";
-    for (const offer of offers) {
-        if (offer.couponId == desiredCoupon) {
-            tokenId = offer.tokenId;
-            break;
-        }
-    }
-
     const headers = {
         authorization: `Bearer ${bearerToken}`
     };
-    const json_data = {
+
+    const json_data = tokenId.map((tokenId) => ({
         operationName: "activateLoyaltyOffer",
-        variables: {
-            tokenId: tokenId
-        },
+        variables: { tokenId },
         query: "mutation activateLoyaltyOffer($tokenId: String!) {\n  activateLoyaltyOffer(tokenId: $tokenId)\n}\n"
-    };
-    return await getTimsGraphQL(json_data, headers);
+    }));
+
+    return await getTimsGraphQL<
+        Tims.IActivateLoyaltyOfferMutationVariables,
+        Tims.IActivateLoyaltyOfferMutation
+    >(json_data, headers);
 }
 
-export async function refreshBearerToken(
-    refreshToken: string
-): Promise<string> {
-    const headers = {
-        "content-type": "application/x-amz-json-1.1",
-        "x-amz-target": "AWSCognitoIdentityProviderService.InitiateAuth"
-    };
-
+export async function refreshBearerToken(refreshToken: string) {
     const json_data = {
         ClientId: TIM_HORTONS_COGNITO_ID,
         AuthFlow: "REFRESH_TOKEN_AUTH",
@@ -274,14 +284,7 @@ export async function refreshBearerToken(
         }
     };
 
-    const response = await fetch(
-        "https://cognito-idp.us-east-1.amazonaws.com/",
-        {
-            method: "POST",
-            headers,
-            body: JSON.stringify(json_data)
-        }
-    ).then((response) => response.json());
+    const response = await getAmazonGraphQL<Amazon>("InitiateAuth", json_data);
 
-    return response["AuthenticationResult"]["IdToken"];
+    return response.AuthenticationResult.IdToken;
 }

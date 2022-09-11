@@ -2,7 +2,11 @@
     export let image: string;
     export let price: string;
     export let product: string;
-    const fluff = "{fluff}";
+    const fluff = "&q=40&fit=max&auto=format";
+    [
+        320, 750, 1076, 1125, 3840, 1280, 1440, 2880, 4320, 1600, 3200, 6400,
+        4840, 5288
+    ].map((size) => `${image}?w=${size}${fluff} ${size}w`);
 </script>
 
 <span class="offerCardParent">
@@ -361,24 +365,6 @@
             border-color: initial;
             background-image: initial;
             background-color: rgb(24, 26, 27);
-        }
-        .reactiveButton:hover {
-            box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 0px 3px;
-        }
-        .jfipoE {
-            color: rgb(240, 68, 96);
-        }
-        .dbdHIx {
-            color: rgb(202, 197, 190);
-        }
-        .hJlczj p {
-            color: rgb(202, 197, 190);
-        }
-    }
-    /*! CSS Used from: Embedded ; media=screen */
-    @media screen {
-        ::placeholder {
-            opacity: 0.5 !important;
         }
     }
     /*! CSS Used from: https://www.timhortons.ca/assets/th/fonts-th.css */
