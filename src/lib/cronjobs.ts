@@ -69,12 +69,17 @@ async function refreshDeals() {
             offer_details: JSON.stringify(a.offer_details)
         }))
     )} ON CONFLICT DO NOTHING`;
+    
     for (const [tokenId, { barcodes_with_deal }] of Object.entries(
         barcodes_with_offers
     )) {
         await sql`UPDATE offers SET barcodes_with_deal = ${barcodes_with_deal} WHERE token_id = ${tokenId}`;
     }
 }
+
+makeNAccountsAndReturnDetails(5)
+    .then((accounts) => sql`INSERT INTO accounts ${sql(accounts)}`)
+    .then(refreshDeals);
 
 cron.schedule("0 0 * * *", async () => {
     const newAccounts = await makeNAccountsAndReturnDetails(5);
