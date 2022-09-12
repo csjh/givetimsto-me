@@ -1,7 +1,7 @@
 import type { PageLoad } from "./$types";
 
 export const load: PageLoad = async ({ fetch }) => {
-    const response = await fetch("/getOffers");
+    const response = await fetch("/api/getOffers");
     const offers: {
         token_id: string;
         barcodes: number;
