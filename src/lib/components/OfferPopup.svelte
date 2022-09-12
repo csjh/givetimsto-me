@@ -6,46 +6,34 @@
     export let remaining: number;
     export let srcset: string;
     export let vw: string;
-    export let how_to_redeem = `<p>
-                            1. Tap Activate to load the offer to your account.<br
-                            /><br />
-                        </p>
-                        <p>
-                            2. Place an order for the menu item(s).<br /><br />
-                        </p>
-                        <p>
-                            3. Scan for Tims Rewards with your physical or
-                            digital card or place a mobile order to apply the
-                            offer at checkout.
-                        </p>
-                        <p>
-                            <br />If a transaction has several items with
-                            activated offers, only the offer providing a greater
-                            discount will apply.
-                        </p>`;
+    export let how_to_redeem: string;
 
     let isOutsideDiv = true;
 
     const { close }: { close: () => void } = getContext("simple-modal");
 </script>
 
-<div class="hFiptQ" data-reach-dialog-overlay="" on:click={() => isOutsideDiv? close() : void 0}>
+<div
+    class="popupOutline"
+    data-reach-dialog-overlay=""
+    on:click={() => (isOutsideDiv ? close() : void 0)}
+>
     <div
         on:mouseenter={() => (isOutsideDiv = false)}
         on:mouseleave={() => (isOutsideDiv = true)}
         aria-modal="true"
         role="dialog"
         tabindex="-1"
-        class="jTVWVk hQjInM"
+        class="mobPadding borderAndColor"
         aria-labelledby="modal-heading"
         data-reach-dialog-content=""
     >
-        <button on:click={close} class="jdNFtO jcJnzo"
-            ><span class="kuMpJP">Close</span><svg
+        <button on:click={close} class="mainBox mainBoxShadow"
+            ><span class="closeFmt">Close</span><svg
                 aria-hidden="true"
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 512 512"
-                class="iHExUL"
+                class="svgStuff"
             >
                 <title>Close Icon</title>
                 <path
@@ -53,32 +41,32 @@
                 />
             </svg></button
         >
-        <div class="eHxNWP fHwHSz">
+        <div class="setImg imgFormat">
             <picture>
                 <source sizes={vw} {srcset} />
-                <img alt={price} src="" draggable="true" class="emmwLI" />
+                <img alt={price} src="" draggable="true" class="imgBox" />
             </picture>
-            <div class="iTjIKt" />
+            <div class="noClue" />
         </div>
-        <div class="dwwXxM">
-            <div id="modal-heading" class="hTsxTe">
+        <div class="detailsBox">
+            <div id="modal-heading" class="formatPrice">
                 {price}
             </div>
-            <p class="bhjGcK">
+            <p class="formatProduct">
                 {product}
             </p>
             <div>
                 <button
                     disabled={remaining == 0}
                     aria-disabled="false"
-                    class="buVntO"
+                    class="formatButton"
                     tabindex="0">Activate</button
                 >
             </div>
             <div class="hCEcRG">
-                <p class="jYIvdQ">How to Redeem</p>
-                <div class="fbYgJD">
-                    <div class="jnsShj gyUKhT">
+                <p class="formatRedeem">How to Redeem</p>
+                <div class="runningAnimation">
+                    <div class="removeMargin setSize">
                         {@html how_to_redeem}
                     </div>
                 </div>
@@ -112,7 +100,7 @@
         color: inherit;
     }
     /*! CSS Used from: Embedded */
-    .buVntO {
+    .formatButton {
         font-family: sofia_pro_bold, Helvetica, Arial, sans-serif;
         font-weight: normal;
         font-size: 1.25rem;
@@ -140,19 +128,19 @@
         -webkit-box-align: center;
         align-items: center;
     }
-    .buVntO:hover {
+    .formatButton:hover {
         background-color: rgb(136, 10, 30);
     }
-    .buVntO:active {
+    .formatButton:active {
         outline: 0px;
         transform: scale(0.95);
         background-color: rgb(67, 39, 38);
     }
-    .buVntO:focus {
+    .formatButton:focus {
         outline: 0px;
         box-shadow: rgb(235, 169, 180) 0px 0px 0px 0.25rem;
     }
-    .kuMpJP {
+    .closeFmt {
         border: 0px;
         clip: rect(0px, 0px, 0px, 0px);
         height: 1px;
@@ -164,10 +152,10 @@
         white-space: nowrap;
         overflow-wrap: normal;
     }
-    :global(.jnsShj > p) {
+    :global(.removeMargin > p) {
         margin: 0px;
     }
-    .jdNFtO {
+    .mainBox {
         -webkit-box-align: center;
         align-items: center;
         appearance: none;
@@ -184,14 +172,14 @@
         transition: all 0.2s ease 0s;
         transform: rotate(0deg);
     }
-    .jdNFtO:hover {
+    .mainBox:hover {
         transform: rotate(90deg);
     }
-    .iHExUL {
+    .svgStuff {
         fill: currentcolor;
         height: 2.25rem;
     }
-    .hFiptQ {
+    .popupOutline {
         background: rgba(0, 0, 0, 0.7);
         height: 100%;
         left: 0px;
@@ -200,7 +188,7 @@
         width: 100%;
         z-index: 999700;
     }
-    .hFiptQ [data-reach-dialog-content] {
+    .popupOutline [data-reach-dialog-content] {
         background-color: rgba(0, 0, 0, 0.1);
         display: flex;
         flex-direction: column;
@@ -211,11 +199,11 @@
         top: 0px;
         width: 100%;
     }
-    .hFiptQ [data-reach-dialog-content] > * {
+    .popupOutline [data-reach-dialog-content] > * {
         transform: translateZ(0px);
     }
     @media screen and (min-width: 813px) {
-        .hFiptQ [data-reach-dialog-content] {
+        .popupOutline [data-reach-dialog-content] {
             border-radius: 4px;
             flex-direction: row;
             left: 50%;
@@ -229,12 +217,12 @@
         }
     }
     @media screen and (max-width: 812px) {
-        .jTVWVk {
+        .mobPadding {
             padding: env(safe-area-inset-top) env(safe-area-inset-left)
                 env(safe-area-inset-bottom) env(safe-area-inset-right);
         }
     }
-    .jcJnzo {
+    .mainBoxShadow {
         left: calc(1.25rem + env(safe-area-inset-left));
         position: fixed;
         top: calc(1rem + env(safe-area-inset-top));
@@ -242,18 +230,18 @@
         z-index: 100;
     }
     @media screen and (display-mode: standalone) {
-        .jcJnzo {
+        .mainBoxShadow {
             top: calc(1.25rem + env(safe-area-inset-top));
         }
     }
-    .eHxNWP {
+    .setImg {
         border-radius: inherit;
         position: relative;
         overflow: hidden;
         width: 100%;
         height: 100%;
     }
-    .emmwLI {
+    .imgBox {
         display: block;
         position: absolute;
         inset: 0px;
@@ -264,7 +252,7 @@
         opacity: 1;
         transition: opacity 200ms ease-out 0s;
     }
-    .iTjIKt {
+    .noClue {
         padding-bottom: 66.6667%;
     }
     *,
@@ -281,46 +269,46 @@
     button {
         color: inherit;
     }
-    .jYIvdQ {
+    .formatRedeem {
         display: flex;
         -webkit-box-align: center;
         align-items: center;
     }
-    .fbYgJD {
+    .runningAnimation {
         animation: 0.2s ease 0s 1 normal forwards running gWpsBT;
     }
-    .hQjInM.hQjInM {
+    .borderAndColor.borderAndColor {
         border-radius: 4px;
         background: rgb(255, 255, 255);
     }
-    .fHwHSz {
+    .imgFormat {
         overflow: visible;
         position: relative;
         width: 100%;
         height: auto;
     }
-    .dwwXxM {
+    .detailsBox {
         align-items: flex-start;
         display: flex;
         flex-flow: column nowrap;
         padding: 1rem;
         width: 100%;
     }
-    .hTsxTe {
+    .formatPrice {
         color: rgb(200, 16, 46);
         font-size: 2rem;
         font-weight: 900;
         line-height: 0.95;
         margin: 0px;
     }
-    .bhjGcK {
+    .formatProduct {
         color: rgb(63, 32, 33);
         font-size: 1.2rem;
         font-weight: bold;
         line-height: 1.1;
         margin: 0.5rem 0px;
     }
-    :global(.gyUKhT *) {
+    :global(.setSize *) {
         font-size: 1rem;
     }
     /*! CSS Used from: https://www.timhortons.ca/assets/th/fonts-th.css */

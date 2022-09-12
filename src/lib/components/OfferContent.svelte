@@ -48,22 +48,27 @@
                     sizes={`${(offsetWidth / innerWidth) * 100}vw`}
                     {srcset}
                 />
-                <img alt="" src="" draggable="true" class="emmwLI" />
+                <img
+                    alt=""
+                    src=""
+                    draggable="true"
+                    class="absolutePowerCorrupts"
+                />
             </picture>
             <div class="bottomPadding" />
         </div>
-        <div class="erOdFI">
-            <div class="eICuOY">
-                <h2 class="jfipoE">{price}</h2>
-                <div class="jnsShj hJlczj">
+        <div class="offerDetailsFlexbox">
+            <div class="setBoxSize">
+                <h2 class="formatPrice">{price}</h2>
+                <div class="removeMargin formatProduct">
                     <p>{product}</p>
                 </div>
-                <p class="dbdHIx">{remaining} remaining</p>
+                <p class="formatRemaining">{remaining} remaining</p>
             </div>
-            <div class="dqSplr">
+            <div class="buttonBox">
                 <button
                     aria-disabled="false"
-                    class="gAXORD"
+                    class="buttonDetails"
                     tabindex="0"
                     on:click={showModal}
                 >
@@ -75,7 +80,7 @@
 </span>
 
 <style>
-    .dqSplr {
+    .buttonBox {
         overflow: visible;
         width: 100%;
         height: auto;
@@ -157,7 +162,7 @@
         }
     }
     /*! CSS Used from: Embedded */
-    .gAXORD {
+    .buttonDetails {
         font-family: sofia_pro_bold, Helvetica, Arial, sans-serif;
         font-weight: normal;
         font-size: 0.875rem;
@@ -185,19 +190,19 @@
         -webkit-box-align: center;
         align-items: center;
     }
-    .gAXORD:hover {
+    .buttonDetails:hover {
         background-color: rgb(136, 10, 30);
     }
-    .gAXORD:active {
+    .buttonDetails:active {
         outline: 0px;
         transform: scale(0.95);
         background-color: rgb(67, 39, 38);
     }
-    .gAXORD:focus {
+    .buttonDetails:focus {
         outline: 0px;
         box-shadow: rgb(235, 169, 180) 0px 0px 0px 0.25rem;
     }
-    .dqSplr {
+    .buttonBox {
         display: flex;
         -webkit-box-align: stretch;
         align-items: stretch;
@@ -224,7 +229,7 @@
         border-radius: 0px;
         box-shadow: none;
     }
-    .jnsShj > p {
+    .removeMargin > p {
         margin: 0px;
     }
     .fillParent {
@@ -234,7 +239,7 @@
         width: 100%;
         height: 100%;
     }
-    .emmwLI {
+    .absolutePowerCorrupts {
         display: block;
         position: absolute;
         inset: 0px;
@@ -306,11 +311,11 @@
             width: 250px;
         }
     }
-    .eICuOY {
+    .setBoxSize {
         width: 100%;
         margin-bottom: 0.5rem;
     }
-    .jfipoE {
+    .formatPrice {
         color: rgb(200, 16, 46);
         font-family: sofia_pro, Helvetica, Arial, sans-serif;
         font-size: 1.25rem;
@@ -323,11 +328,11 @@
         overflow: hidden;
     }
     @media screen and (min-width: 813px) {
-        .jfipoE {
+        .formatPrice {
             font-size: 1.5rem;
         }
     }
-    .dbdHIx {
+    .formatRemaining {
         color: rgb(63, 32, 33);
         font-family: sofia_pro, Helvetica, Arial, sans-serif;
         font-size: 0.75rem;
@@ -335,11 +340,11 @@
         margin-block: 0.5em;
     }
     @media screen and (min-width: 813px) {
-        .dbdHIx {
+        .formatRemaining {
             font-size: 0.9rem;
         }
     }
-    .erOdFI {
+    .offerDetailsFlexbox {
         align-items: flex-start;
         display: flex;
         flex-flow: column nowrap;
@@ -349,7 +354,7 @@
         padding: 1rem;
         width: 100%;
     }
-    .hJlczj p {
+    .formatProduct p {
         margin: 0.5rem 0px;
         color: rgb(63, 32, 33);
         font-family: sofia_pro, Helvetica, Arial, sans-serif;
@@ -369,24 +374,24 @@
     }
     /*! CSS Used from: Embedded ; media=screen */
     @media screen {
-        .gAXORD {
+        .buttonDetails {
             color: rgb(232, 230, 227);
             background-color: rgb(160, 13, 37);
             outline-color: initial;
             border-color: initial;
         }
-        .gAXORD:hover {
+        .buttonDetails:hover {
             background-color: rgb(109, 8, 24);
         }
-        .gAXORD:active {
+        .buttonDetails:active {
             outline-color: initial;
             background-color: rgb(54, 31, 30);
         }
-        .gAXORD:focus {
+        .buttonDetails:focus {
             outline-color: initial;
             box-shadow: rgb(93, 22, 34) 0px 0px 0px 0.25rem;
         }
-        .dqSplr {
+        .buttonBox {
             background-image: initial;
             background-color: initial;
             border-color: transparent;
@@ -430,11 +435,11 @@
         }
     }
 
-    .hJlczj p {
+    .formatProduct p {
         color: rgb(202, 197, 190);
     }
 
-    .dbdHIx {
+    .formatRemaining {
         color: rgb(202, 197, 190);
     }
 </style>

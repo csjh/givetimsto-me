@@ -17,7 +17,7 @@
     h1 {
         font-family: sofia_pro, Helvetica, Arial, sans-serif;
         text-align: center;
-        color: rgb(202, 197, 190)
+        color: rgb(202, 197, 190);
     }
     .flexbox {
         display: flex;

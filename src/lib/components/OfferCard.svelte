@@ -9,4 +9,8 @@
     export let how_to_redeem: string;
 </script>
 
-<Modal><OfferCard {...{ image, price, product, remaining, how_to_redeem }} /></Modal>
+<Modal
+    ><OfferCard
+        {...{ image, price, product, remaining, how_to_redeem }}
+    /></Modal
+>

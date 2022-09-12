@@ -14,6 +14,7 @@
     "devDependencies": {
         "@sveltejs/adapter-node": "next",
         "@sveltejs/kit": "next",
+        "@types/node-cron": "^3.0.4",
         "@types/sanitize-html": "^2.6.2",
         "@types/uuid": "^8.3.4",
         "@typescript-eslint/eslint-plugin": "^5.27.0",
