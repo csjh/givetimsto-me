@@ -2,7 +2,7 @@ import type { RequestHandler } from "./$types";
 import type { IOffers } from "$lib/types/db";
 import sql from "$lib/db/postgres";
 import { json } from "@sveltejs/kit";
-import sanitizeHtml from 'sanitize-html';
+import sanitize from 'sanitize-html';
 
 export const GET: RequestHandler = async () => {
     const sql_offers = await sql<IOffers[]>`SELECT * FROM offers`;
@@ -16,7 +16,7 @@ export const GET: RequestHandler = async () => {
                 image:
                     "https://cdn.sanity.io/" +
                     offer_details?.localizedImage?.en?.app?.asset?.path,
-                how_to_redeem: "<p>" + offer_details?.howToRedeem?.en.map(({ children }) => sanitizeHtml(children[0].text)).join("</p><p>").replaceAll("\\n", "<br />") + "</p>",
+                how_to_redeem: "<p>" + offer_details?.howToRedeem?.en.map(({ children }) => sanitize(children[0].text)).join("</p><p>").replaceAll("\\n", "<br />") + "</p>",
             }
         })
     );
