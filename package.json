@@ -14,6 +14,7 @@
     "devDependencies": {
         "@sveltejs/adapter-node": "next",
         "@sveltejs/kit": "next",
+        "@types/sanitize-html": "^2.6.2",
         "@types/uuid": "^8.3.4",
         "@typescript-eslint/eslint-plugin": "^5.27.0",
         "@typescript-eslint/parser": "^5.27.0",
@@ -34,6 +35,8 @@
         "dotenv": "^16.0.1",
         "node-cron": "^3.0.2",
         "postgres": "^3.2.4",
+        "sanitize-html": "^2.7.1",
+        "svelte-simple-modal": "^1.4.1",
         "uuid": "^9.0.0"
     },
     "engines": {

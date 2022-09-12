@@ -9,6 +9,7 @@ export const load: PageLoad = async ({ fetch }) => {
             product: string;
             price: string;
             image: string;
+            how_to_redeem: string;
         };
     }[] = await response.json();
     return { offers };
