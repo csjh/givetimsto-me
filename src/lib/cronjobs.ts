@@ -66,7 +66,7 @@ async function refreshDeals() {
     await sql`INSERT INTO offers ${sql(
         toAdd.map((a) => ({
             ...a,
-            offer_details: JSON.stringify(a.offer_details)
+            offer_details: a.offer_details as never
         }))
     )} ON CONFLICT DO NOTHING`;
 
