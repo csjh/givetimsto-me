@@ -1,5 +1,6 @@
 import * as Tims from "$lib/types/graphql";
 import type { Amazon } from "$lib/types/amazon";
+import { v4 as uuidv4 } from "uuid";
 
 const sleep = (ms: number) => new Promise((res) => setTimeout(res, ms));
 const print = (...text: unknown[]) => console.log(`${text.map((a) => JSON.stringify(a)).join(" ")}\n\n\n`);
@@ -53,6 +54,9 @@ export async function makeNAccountsAndReturnDetails(numberOfAccounts: number) {
     print(users);
     await sleep(1);
 
+    await Promise.all(users.map(({ IdToken }) => getBarcode(IdToken)));
+    await sleep(5);
+
     return await Promise.all(
         users.map(async ({ IdToken, RefreshToken, email }) => ({
             barcode: await getBarcode(IdToken),
@@ -71,7 +75,7 @@ async function getTimsGraphQL<Input, Output>(
 ) {
     const response = await fetch("https://use1-prod-th.rbictg.com/graphql", {
         method: "POST",
-        headers: { "Content-Type": "application/json", ...headers },
+        headers: { "Content-Type": "application/json", "x-session-id": uuidv4(), ...headers },
         body: JSON.stringify(data)
     });
 
