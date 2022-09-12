@@ -79,10 +79,10 @@ async function getTimsGraphQL<Input, Output>(
         throw Error(`Error code ${response.status}: ${response.statusText}\n${await response.text()}`)
     }
 
-    const response_data: { data: Output, errors?: Tims.Errors }[] = await response.json();
+    const response_data: { data: Output, errors?: Tims.Errors[] }[] = await response.json();
     const { errors } = response_data.find(({ errors }) => errors != null) ?? {};
     if (errors != null) {
-        throw Error(`GQL Error code ${errors?.extensions?.statusCode}: ${errors?.extensions?.code}\n${errors?.message}\n${JSON.stringify(errors)}`)
+        throw Error(`GQL Error code ${errors[0]?.extensions?.statusCode}: ${errors[0]?.extensions?.code}\n${errors[0]?.message}\n${JSON.stringify(errors)}`)
     }
 
     return response_data;

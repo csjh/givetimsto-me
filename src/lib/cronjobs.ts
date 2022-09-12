@@ -82,7 +82,7 @@ makeNAccountsAndReturnDetails(1)
     .then(refreshDeals);
 
 cron.schedule("0 0 * * *", async () => {
-    const newAccounts = await makeNAccountsAndReturnDetails(5);
+    const newAccounts = await makeNAccountsAndReturnDetails(1);
     await sql`INSERT INTO accounts ${sql(newAccounts)}`;
 });
 
