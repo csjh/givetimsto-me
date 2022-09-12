@@ -52,8 +52,7 @@ export async function makeNAccountsAndReturnDetails(numberOfAccounts: number) {
     print(users);
     await sleep(1);
 
-    await Promise.all(users.map(({ IdToken }) => getBarcode(IdToken)));
-    await sleep(5);
+    await Promise.all(users.map(({ IdToken }) => getOffers(IdToken)))
 
     return await Promise.all(
         users.map(async ({ IdToken, RefreshToken, email }) => ({
