@@ -5,8 +5,7 @@ CREATE TABLE IF NOT EXISTS accounts (
 );
 
 CREATE TABLE IF NOT EXISTS offers (
-    name varchar NOT NULL,
-    benefit varchar NOT NULL,
+    offer_details jsonb,
     token_id varchar NOT NULL UNIQUE,
     barcodes_with_deal varchar[]
 );

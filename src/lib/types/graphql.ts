@@ -1,106 +1,195 @@
 /* my shit */
 export interface Errors {
-    locations:  Location[];
-    message:    string;
-    path:       string[];
+    locations: Location[];
+    message: string;
+    path: string[];
     extensions: Extensions;
 }
 
 interface Extensions {
-    code:           string;
-    statusCode:     number;
+    code: string;
+    statusCode: number;
     statusCategory: string;
 }
 
 interface Location {
-    line:   number;
+    line: number;
     column: number;
 }
 
 export interface OfferDetails {
     _createdAt: string;
     _id: string;
-    _rev: string;
-    _type: string;
+    _rev: Rev;
+    _type: OutType;
     _updatedAt: string;
     description: Description;
     howToRedeem: HowToRedeem;
     id: string;
     images: Images;
-    internalName: string;
+    internalName: InternalName;
     localizedImage: LocalizedImage;
+    moreInfo: HowToRedeem;
+    name: Description;
+    offerPrice: number;
+    option: Option;
+    ruleSet: RuleSet[];
+    shortCode: string;
+    uiPattern: UIPattern;
+    vendorConfigs: VendorConfigs;
 }
 
-interface Description {
+export enum Rev {
+    QpywygAhL4CvnADWBB32L7 = "qpywygAhL4cvnADWBB32l7"
+}
+
+export enum OutType {
+    Offer = "offer"
+}
+
+export interface Description {
     en: EnElement[];
 }
 
-interface EnElement {
+export interface EnElement {
     _key: string;
-    _type: "block";
+    _type: EnType;
     children: Child[];
+    markDefs: MarkDef[];
     style: Style;
 }
 
-interface Child {
+export enum EnType {
+    Block = "block"
+}
+
+export interface Child {
     _key: string;
-    _type: "span";
+    _type: ChildType;
+    marks: string[];
     text: string;
 }
 
-enum Style {
+export enum ChildType {
+    Span = "span"
+}
+
+export interface MarkDef {
+    _key: string;
+    _type: MarkDefType;
+    href: string;
+}
+
+export enum MarkDefType {
+    Link = "link"
+}
+
+export enum Style {
     Normal = "normal"
 }
 
-interface HowToRedeem {
-    _type: string;
+export interface HowToRedeem {
+    _type: HowToRedeemType;
     en: EnElement[];
     fr: EnElement[];
 }
 
-interface Images {
-    _type: string;
+export enum HowToRedeemType {
+    LocaleBlockContent = "localeBlockContent"
+}
+
+export interface Images {
+    _type: ImagesType;
     app: ImagesApp;
 }
 
-interface ImagesApp {
-    _type: string;
+export enum ImagesType {
+    Images = "images"
+}
+
+export interface ImagesApp {
+    _type: AppType;
     asset: PurpleAsset;
 }
 
-interface PurpleAsset {
-    _ref: string;
-    _type: string;
+export enum AppType {
+    Image = "image"
 }
 
-interface LocalizedImage {
+export interface PurpleAsset {
+    _ref: Ref;
+    _type: PurpleType;
+}
+
+export enum Ref {
+    ImageA759A49932Fd7694450A920D0739960D0F8134B1660X440PNG = "image-a759a49932fd7694450a920d0739960d0f8134b1-660x440-png",
+    ImageCf933E02D240F40777Dfecd3B9B5338C5696F71D660X440PNG = "image-cf933e02d240f40777dfecd3b9b5338c5696f71d-660x440-png",
+    ImageDa2623E5Efeb4B004291Ec2F1A3132Bc896Bc190660X440PNG = "image-da2623e5efeb4b004291ec2f1a3132bc896bc190-660x440-png"
+}
+
+export enum PurpleType {
+    Reference = "reference"
+}
+
+export enum InternalName {
+    The1 = "$1*",
+    The199 = "$1.99*"
+}
+
+export interface LocalizedImage {
     en: LocalizedImageEn;
 }
 
-interface LocalizedImageEn {
+export interface LocalizedImageEn {
     app: EnApp;
 }
 
-interface EnApp {
+export interface EnApp {
     asset: FluffyAsset;
 }
 
-interface FluffyAsset {
+export interface FluffyAsset {
     _createdAt: string;
-    _id: string;
-    _rev: string;
-    _type: string;
+    _id: ID;
+    _rev: Rev;
+    _type: FluffyType;
     _updatedAt: string;
-    assetId: string;
-    extension: string;
+    assetId: AssetID;
+    extension: Extension;
     metadata: Metadata;
-    mimeType: string;
-    originalFilename: string;
+    mimeType: MIMEType;
+    originalFilename: OriginalFilename;
     path: string;
+    sha1hash: AssetID;
+    size: number;
+    uploadId: UploadID;
+    url: string;
 }
 
-interface Metadata {
-    _type: string;
+export enum ID {
+    Image1D04B0F791C02D27C9Ff0025B86304918Ef8E5691320X880PNG = "image-1d04b0f791c02d27c9ff0025b86304918ef8e569-1320x880-png",
+    Image750B2Bd98E139E4Ffe02C7Ab184C0F6B46Ef4F1D1321X880PNG = "image-750b2bd98e139e4ffe02c7ab184c0f6b46ef4f1d-1321x880-png",
+    ImageA560D86E7478Bd28Dd69A4975B216Cc1A755F91D1320X880PNG = "image-a560d86e7478bd28dd69a4975b216cc1a755f91d-1320x880-png",
+    ImageC209952061931Ef38D0B9F27E639141290138D021320X880PNG = "image-c209952061931ef38d0b9f27e639141290138d02-1320x880-png"
+}
+
+export enum FluffyType {
+    SanityImageAsset = "sanity.imageAsset"
+}
+
+export enum AssetID {
+    A560D86E7478Bd28Dd69A4975B216Cc1A755F91D = "a560d86e7478bd28dd69a4975b216cc1a755f91d",
+    C209952061931Ef38D0B9F27E639141290138D02 = "c209952061931ef38d0b9f27e639141290138d02",
+    The1D04B0F791C02D27C9Ff0025B86304918Ef8E569 = "1d04b0f791c02d27c9ff0025b86304918ef8e569",
+    The750B2Bd98E139E4Ffe02C7Ab184C0F6B46Ef4F1D = "750b2bd98e139e4ffe02c7ab184c0f6b46ef4f1d"
+}
+
+export enum Extension {
+    PNG = "png"
+}
+
+export interface Metadata {
+    _type: MetadataType;
     dimensions: Dimensions;
     hasAlpha: boolean;
     isOpaque: boolean;
@@ -108,15 +197,23 @@ interface Metadata {
     palette: Palette;
 }
 
-interface Dimensions {
-    _type: string;
+export enum MetadataType {
+    SanityImageMetadata = "sanity.imageMetadata"
+}
+
+export interface Dimensions {
+    _type: DimensionsType;
     aspectRatio: number;
     height: number;
     width: number;
 }
 
-interface Palette {
-    _type: string;
+export enum DimensionsType {
+    SanityImageDimensions = "sanity.imageDimensions"
+}
+
+export interface Palette {
+    _type: PaletteType;
     darkMuted: DarkMuted;
     darkVibrant: DarkMuted;
     dominant: DarkMuted;
@@ -126,13 +223,125 @@ interface Palette {
     vibrant: DarkMuted;
 }
 
-interface DarkMuted {
-    _type: string;
-    background: string;
-    foreground: string;
-    population: number;
-    title: string;
+export enum PaletteType {
+    SanityImagePalette = "sanity.imagePalette"
 }
+
+export interface DarkMuted {
+    _type: DarkMutedType;
+    background: string;
+    foreground: Foreground;
+    population: number;
+    title: Foreground;
+}
+
+export enum DarkMutedType {
+    SanityImagePaletteSwatch = "sanity.imagePaletteSwatch"
+}
+
+export enum Foreground {
+    Fff = "#fff",
+    The000 = "#000"
+}
+
+export enum MIMEType {
+    ImagePNG = "image/png"
+}
+
+export enum OriginalFilename {
+    HotCoffeeSoloPNG = "HotCoffee_Solo.png",
+    IcedCappSoloPNG = "IcedCapp_Solo.png",
+    The697C82357Bf7C1Bfd3Be08Ec3Ba9D9Bb8E2Aeb711320X880PNG = "697c82357bf7c1bfd3be08ec3ba9d9bb8e2aeb71-1320x880.png",
+    Timbits10PackPNG = "Timbits_10Pack.png"
+}
+
+export enum UploadID {
+    AxJZu9N03NqijXa5C0X1PS381MLGbj5R = "AxJZu9n03nqijXa5c0X1PS381MLGbj5r",
+    CvP0XCJvniA5ToX0RlQq3S0AYdQr4EqY = "CvP0XCJvniA5ToX0RlQq3s0aYdQr4EqY",
+    I13U5Ex8NZMSAK3FJZqtnhJk9OqLwo0K = "i13U5Ex8NZMsAK3FJZqtnhJk9OqLwo0K",
+    OpZWa2IOe9CYUbEBGOCtnqb8Jdbxxtuo = "OpZWa2iOe9cYUbEBGOCtnqb8jdbxxtuo"
+}
+
+export interface Option {
+    _id: string;
+    _type: OptionType;
+}
+
+export enum OptionType {
+    OfferActivation = "offerActivation"
+}
+
+export interface RuleSet {
+    _key: Key;
+    _type: Type;
+    endDate?: string;
+    startDate?: string;
+    key: Key;
+    ruleSetType: Type;
+    params: Params;
+    requiresAssignment?: RequiresAssignment;
+}
+
+export enum Key {
+    Bb52B15356CF = "bb52b15356cf",
+    E25A68256Ab7 = "e25a68256ab7",
+    The006B7Ed9F7E9 = "006b7ed9f7e9",
+    The63F09E1Df852 = "63f09e1df852",
+    The75Bd59F9E494 = "75bd59f9e494",
+    The7F1236D38169 = "7f1236d38169"
+}
+
+export enum Type {
+    BetweenDates = "between-dates",
+    RequiresAssignment = "requires-assignment"
+}
+
+export interface Params {
+    endDate?: string;
+    startDate?: string;
+    requiresAssignment?: RequiresAssignment;
+}
+
+export enum RequiresAssignment {
+    Dsds = " DSDS",
+    Dssf = " dssf",
+    Dwsf = " dwsf",
+    Hello = " hello"
+}
+
+export enum UIPattern {
+    StandardOffer = "Standard Offer"
+}
+
+export interface VendorConfigs {
+    _type: VendorConfigsType;
+    hdx: Hdx;
+    productNumber: Hdx;
+    productNumberDelivery: Hdx;
+    qdi?: Hdx;
+    qdiDelivery?: Hdx;
+    qst: Hdx;
+    sicom: Hdx;
+    sicomDelivery?: Hdx;
+}
+
+export enum VendorConfigsType {
+    VendorConfigs = "vendorConfigs"
+}
+
+export interface Hdx {
+    _type: HdxType;
+    pluType: PluType;
+}
+
+export enum HdxType {
+    VendorConfig = "vendorConfig"
+}
+
+export enum PluType {
+    Ignore = "ignore"
+}
+
 // end
 
 export type Maybe<T> = T;

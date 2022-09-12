@@ -8,5 +8,5 @@
 <h1>Welcome to Give Tims To Me!</h1>
 
 {#each data.offers as offer}
-    <OfferCard {...offer.offer_details} />
+    <OfferCard {...offer.offer_details} remaining={offer.barcodes} />
 {/each}

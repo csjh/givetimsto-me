@@ -46,7 +46,7 @@ async function refreshDeals() {
     const barcodes_with_offers: Record<string, IOffers> = {};
     const toAdd: IOffers[] = [];
     bearerTokens.forEach(({ barcode }, i) => {
-        offers[i].forEach(({ tokenId, offerDetails }) => {
+        offers[i].forEach(({ couponId: tokenId, offerDetails }) => {
             if (!(tokenId in barcodes_with_offers)) {
                 const details: OfferDetails = JSON.parse(offerDetails);
 

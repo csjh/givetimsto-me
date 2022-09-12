@@ -2,20 +2,28 @@
     export let image: string;
     export let price: string;
     export let product: string;
+    export let remaining: number;
+
     const fluff = "&q=40&fit=max&auto=format";
-    [
+    const srcset = [
         320, 750, 1076, 1125, 3840, 1280, 1440, 2880, 4320, 1600, 3200, 6400,
         4840, 5288
-    ].map((size) => `${image}?w=${size}${fluff} ${size}w`);
+    ]
+        .map((size) => `${image}?w=${size}${fluff} ${size}w`)
+        .join(", ");
+
+    let main_card: HTMLSpanElement;
 </script>
 
-<span class="offerCardParent">
+<span class="offerCardParent" bind:this={main_card}>
     <button class="reactiveButton">
         <div class="fillParent softenEdges">
             <picture>
                 <source
-                    sizes="18.02469135802469vw"
-                    srcset="{image}?w=320{fluff} 320w, {image}?w=750{fluff} 750w, {image}?w=1077{fluff} 1076w, {image}?w=1125{fluff} 1125w, {image}?w=3840{fluff} 3840w, {image}?w=1280{fluff} 1280w, {image}?w=1440{fluff} 1440w, {image}?w=2880{fluff} 2880w, {image}?w=4320{fluff} 4320w, {image}?w=1600{fluff} 1600w, {image}?w=3200{fluff} 3200w, {image}?w=6400{fluff} 6400w, {image}?w=4840{fluff} 4840w, {image}?w=5288{fluff} 5288w"
+                    sizes={`${
+                        (main_card.offsetWidth / window.innerWidth) * 100
+                    }vw`}
+                    {srcset}
                 />
                 <img alt="" src="" draggable="true" class="emmwLI" />
             </picture>
@@ -27,7 +35,7 @@
                 <div class="jnsShj hJlczj">
                     <p>{product}</p>
                 </div>
-                <p class="dbdHIx">1 days left</p>
+                <p class="dbdHIx">{remaining} remaining</p>
             </div>
             <div width="100%" height="auto" class="dqSplr">
                 <button aria-disabled="false" class="gAXORD" tabindex="0">

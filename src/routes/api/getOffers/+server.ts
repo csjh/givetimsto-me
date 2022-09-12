@@ -10,11 +10,11 @@ export const GET: RequestHandler = async () => {
             token_id: token_id,
             barcodes: barcodes_with_deal.length,
             offer_details: {
-                product: offer_details.description.en[0].children[0].text,
+                product: offer_details?.description?.en[0]?.children[0]?.text,
                 price: offer_details.internalName,
                 image:
                     "https://cdn.sanity.io/images/" +
-                    offer_details.localizedImage.en.app.asset.path
+                    offer_details?.localizedImage?.en?.app?.asset?.path
             }
         })
     );
