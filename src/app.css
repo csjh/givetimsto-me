@@ -1,0 +1,39 @@
+html {
+    box-sizing: border-box;
+    font: 100% / 1.5 sofia_pro, Helvetica, Arial, sans-serif;
+    color: rgb(63, 32, 33);
+    background-color: rgb(63, 32, 33);
+    -webkit-font-smoothing: antialiased;
+}
+
+@font-face {
+    font-family: "sofia_pro_bold";
+    src: url("/fonts/sofia_pro_bold.otf") format("opentype"),
+        url("/fonts/sofia_pro_bold.woff2") format("woff2"),
+        url("/fonts/sofia_pro_bold.woff") format("woff");
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: "sofia_pro";
+    src: url("/fonts/sofia_pro_black.otf") format("opentype"),
+        url("/fonts/sofia_pro_black.woff2") format("woff2"),
+        url("/fonts/sofia_pro_black.woff") format("woff");
+    font-weight: 900;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: "sofia_pro";
+    src: url("/fonts/sofia_pro_regular.otf") format("opentype"),
+        url("/fonts/sofia_pro_regular.woff2") format("woff2"),
+        url("/fonts/sofia_pro_regular.woff") format("woff");
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+*, ::before, ::after {
+    box-sizing: inherit;
+}
