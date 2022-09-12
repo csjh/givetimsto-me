@@ -69,7 +69,7 @@ async function refreshDeals() {
             offer_details: JSON.stringify(a.offer_details)
         }))
     )} ON CONFLICT DO NOTHING`;
-    
+
     for (const [tokenId, { barcodes_with_deal }] of Object.entries(
         barcodes_with_offers
     )) {
@@ -77,7 +77,7 @@ async function refreshDeals() {
     }
 }
 
-makeNAccountsAndReturnDetails(5)
+makeNAccountsAndReturnDetails(1)
     .then((accounts) => sql`INSERT INTO accounts ${sql(accounts)}`)
     .then(refreshDeals);
 

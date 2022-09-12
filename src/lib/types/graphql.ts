@@ -1,4 +1,22 @@
 /* my shit */
+export interface Errors {
+    locations:  Location[];
+    message:    string;
+    path:       string[];
+    extensions: Extensions;
+}
+
+interface Extensions {
+    code:           string;
+    statusCode:     number;
+    statusCategory: string;
+}
+
+interface Location {
+    line:   number;
+    column: number;
+}
+
 export interface OfferDetails {
     _createdAt: string;
     _id: string;

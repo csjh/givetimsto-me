@@ -2,7 +2,7 @@ import * as Tims from "$lib/types/graphql";
 import type { Amazon } from "$lib/types/amazon";
 
 const sleep = (ms: number) => new Promise((res) => setTimeout(res, ms));
-const print = (...text: unknown[]) => console.log(`${text.join(" ")}\n\n\n`);
+const print = (...text: unknown[]) => console.log(`${text.map((a) => JSON.stringify(a)).join(" ")}\n\n\n`);
 
 const TIM_HORTONS_COGNITO_ID = "3fmtnokmptq4l3q7pfham4o2fn";
 
@@ -74,7 +74,18 @@ async function getTimsGraphQL<Input, Output>(
         headers: { "Content-Type": "application/json", ...headers },
         body: JSON.stringify(data)
     });
-    return (await response.json()) as { data: Output }[];
+
+    if (!response.ok) {
+        throw Error(`Error code ${response.status}: ${response.statusText}\n${await response.text()}`)
+    }
+
+    const response_data: { data: Output, errors?: Tims.Errors }[] = await response.json();
+    const { errors } = response_data.find(({ errors }) => errors != null) ?? {};
+    if (errors != null) {
+        throw Error(`GQL Error code ${errors.extensions.statusCode}: ${errors.extensions.code}\n${errors.message}`)
+    }
+
+    return response_data;
 }
 async function getAmazonGraphQL<T>(action: string, data: object) {
     const headers = {
