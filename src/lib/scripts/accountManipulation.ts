@@ -22,7 +22,6 @@ export async function makeNAccountsAndReturnDetails(numberOfAccounts: number) {
         });
     }
     const signUpConfirmationJWTsWithEmails = await createAccounts(userDetails);
-    print(signUpConfirmationJWTsWithEmails);
     for (const jwt of signUpConfirmationJWTsWithEmails) {
         if (jwt == null) {
             throw new Error("jwt is null");
@@ -47,7 +46,6 @@ export async function makeNAccountsAndReturnDetails(numberOfAccounts: number) {
     const authenticationJwts = await validateAuthJWTs(
         signUpConfirmationJWTsWithEmails
     );
-    print(authenticationJwts);
     await sleep(1);
 
     const users = await Promise.all(authenticationJwts.map(getAmazonJwt));
@@ -89,6 +87,7 @@ async function getTimsGraphQL<Input, Output>(
         throw Error(`GQL Error code ${errors[0]?.extensions?.statusCode}: ${errors[0]?.extensions?.code}\n${errors[0]?.message}\n${JSON.stringify(errors)}`)
     }
 
+    print(response_data);
     return response_data;
 }
 async function getAmazonGraphQL<T>(action: string, data: object) {
