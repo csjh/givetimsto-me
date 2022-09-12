@@ -16,7 +16,7 @@ export async function makeNAccountsAndReturnDetails(numberOfAccounts: number) {
     for (let i = 0; i < numberOfAccounts; i++) {
         userDetails.push({
             name: "Johnny",
-            email: `alex+${Math.floor(Math.random() * 1e10)}@gmail.com`,
+            email: `al.ex+${Math.floor(Math.random() * 1e10)}@gmail.com`,
             dob: birthday.toISOString().split("T")[0]
         });
     }
