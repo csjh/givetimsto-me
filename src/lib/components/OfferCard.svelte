@@ -7,10 +7,16 @@
     export let product: string;
     export let remaining: number;
     export let how_to_redeem: string;
+    export let token_id: string;
 </script>
 
 <Modal>
     <OfferCard
-        {...{ image, price, product, remaining, how_to_redeem }}
+        {image}
+        {price}
+        {product}
+        {remaining}
+        {how_to_redeem}
+        {token_id}
     />
 </Modal>

@@ -16,13 +16,13 @@ export const GET: RequestHandler = async ({ url }) => {
     }
 
     await sql`UPDATE offers SET barcodes_with_deal = array_remove(barcodes_with_deal, ${barcode}) WHERE token_id = ${token_id}`;
-    
-    const qr = await qrcode.toDataURL(barcode, {
+
+    const qr = await qrcode.toBuffer(barcode, {
         color: {
             dark: "#000000FF",
-            light: "#FFFFFFFF",
+            light: "#FFFFFFFF"
         },
         width: 100
     });
-    return json({ qr });
+    return new Response(qr);
 };

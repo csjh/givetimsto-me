@@ -9,7 +9,11 @@
 
 <div class="flexbox">
     {#each data.offers as offer}
-        <OfferCard {...offer.offer_details} remaining={offer.barcodes} />
+        <OfferCard
+            {...offer.offer_details}
+            token_id={offer.token_id}
+            remaining={offer.barcodes}
+        />
     {/each}
 </div>
 

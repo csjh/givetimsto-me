@@ -7,6 +7,7 @@
     export let product: string;
     export let remaining: number;
     export let how_to_redeem: string;
+    export let token_id: string;
 
     const fluff = "&q=40&fit=max&auto=format";
     const srcset = [
@@ -34,6 +35,7 @@
             remaining,
             srcset,
             how_to_redeem,
+            token_id,
             vw: `${(offsetWidth / innerWidth) * 100}vw`
         });
 </script>

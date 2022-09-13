@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { goto } from "$app/navigation";
     import { getContext } from "svelte";
 
     export let price: string;
@@ -7,6 +8,7 @@
     export let srcset: string;
     export let vw: string;
     export let how_to_redeem: string;
+    export let token_id: string;
 
     let isOutsideDiv = true;
 
@@ -60,7 +62,9 @@
                     disabled={remaining == 0}
                     aria-disabled="false"
                     class="formatButton"
-                    tabindex="0">Activate</button
+                    tabindex="0"
+                    on:click={() => goto(`/api/consumeOffer?offer=${token_id}`)}
+                    >Activate</button
                 >
             </div>
             <div class="hCEcRG">
