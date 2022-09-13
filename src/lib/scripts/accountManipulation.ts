@@ -100,7 +100,6 @@ async function getTimsGraphQL<Input, Output>(
         );
     }
 
-    print(response_data);
     return response_data;
 }
 async function getAmazonGraphQL<T>(action: string, data: object) {
