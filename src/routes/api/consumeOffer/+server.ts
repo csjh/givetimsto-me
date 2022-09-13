@@ -8,7 +8,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const token_id = url.searchParams.get("offer");
     const [{ barcodes_with_deal }] = await sql<
         [IOffers]
-    >`SELECT barcode FROM offers WHERE token_id = ${token_id}`;
+    >`SELECT barcodes_with_deal FROM offers WHERE token_id = ${token_id}`;
     const [barcode] = barcodes_with_deal;
 
     if (barcode == null) {
@@ -22,7 +22,7 @@ export const GET: RequestHandler = async ({ url }) => {
             dark: "#000000FF",
             light: "#FFFFFFFF"
         },
-        width: 100
+        width: 300
     });
     return new Response(qr);
 };
