@@ -77,13 +77,14 @@ async function refreshDeals() {
     }
 }
 
-makeNAccountsAndReturnDetails(5)
-   .then((accounts) => sql`INSERT INTO accounts ${sql(accounts)}`)
-   .then(refreshDeals);
+//makeNAccountsAndReturnDetails(1)
+//    .then((accounts) => sql`INSERT INTO accounts ${sql(accounts)}`)
+//    .then(refreshDeals);
 
 cron.schedule("0 0 * * *", async () => {
     const newAccounts = await makeNAccountsAndReturnDetails(1);
     await sql`INSERT INTO accounts ${sql(newAccounts)}`;
 });
 
+refreshDeals();
 cron.schedule("0 * * * *", refreshDeals);
