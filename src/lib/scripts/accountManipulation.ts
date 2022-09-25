@@ -280,24 +280,37 @@ export async function getOffers(amazonJwt: string) {
     return response[0].data.evaluateAllUserOffers.offersFeedback;
 }
 
-export async function activateAllOffers(
-    tokenId: string[],
+export async function findAndActivateOffer(
+    offers: readonly Tims.IOfferFeedbackEntryFragment[],
+    desiredCoupon: string,
     bearerToken: string
 ) {
+    let tokenId = "";
+    for (const offer of offers) {
+        if (offer.couponId == desiredCoupon) {
+            tokenId = offer.tokenId;
+            break;
+        }
+    }
+
     const headers = {
         authorization: `Bearer ${bearerToken}`
     };
 
-    const json_data = tokenId.map((tokenId) => ({
-        operationName: "activateLoyaltyOffer",
-        variables: { tokenId },
-        query: "mutation activateLoyaltyOffer($tokenId: String!) {\n  activateLoyaltyOffer(tokenId: $tokenId)\n}\n"
-    }));
+    const json_data = [
+        {
+            operationName: "activateLoyaltyOffer",
+            variables: { tokenId },
+            query: "mutation activateLoyaltyOffer($tokenId: String!) {\n  activateLoyaltyOffer(tokenId: $tokenId)\n}\n"
+        }
+    ];
 
-    return await getTimsGraphQL<
+    const response = await getTimsGraphQL<
         Tims.IActivateLoyaltyOfferMutationVariables,
         Tims.IActivateLoyaltyOfferMutation
     >(json_data, headers);
+
+    return response[0].data.activateLoyaltyOffer;
 }
 
 export async function refreshBearerToken(refreshToken: string) {

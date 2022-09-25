@@ -3,7 +3,6 @@ import sql from "$lib/db/postgres";
 import {
     makeNAccountsAndReturnDetails,
     refreshBearerToken,
-    activateAllOffers,
     getOffers
 } from "$lib/scripts/accountManipulation";
 import type { IOffers, IAccounts } from "$lib/types/db";
@@ -29,19 +28,12 @@ async function refreshAllBearerTokens() {
     );
 }
 
-async function refreshDeals() {
+export async function refreshDeals() {
     const bearerTokens = await refreshAllBearerTokens();
 
     const offers = await Promise.all(
         bearerTokens.map(({ bearer_token }) => getOffers(bearer_token))
     );
-
-    for (let i = 0; i < bearerTokens.length; i++) {
-        await activateAllOffers(
-            offers[i].map(({ tokenId }) => tokenId),
-            bearerTokens[i].bearer_token
-        );
-    }
 
     const barcodes_with_offers: Record<string, IOffers> = {};
     const toAdd: IOffers[] = [];
