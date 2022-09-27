@@ -1,4 +1,4 @@
-import { RequestHandler } from "./$types";
+import type { RequestHandler } from "./$types";
 
 export const GET: RequestHandler = () => {
     return new Response();
