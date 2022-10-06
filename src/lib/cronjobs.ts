@@ -55,12 +55,13 @@ export async function refreshDeals() {
         });
     });
 
+    await sql`DELETE FROM offers`;
     await sql`INSERT INTO offers ${sql(
         toAdd.map((a) => ({
             ...a,
             offer_details: a.offer_details as never
         }))
-    )} ON CONFLICT DO NOTHING`;
+    )}`;
 
     for (const [tokenId, { barcodes_with_deal }] of Object.entries(
         barcodes_with_offers
